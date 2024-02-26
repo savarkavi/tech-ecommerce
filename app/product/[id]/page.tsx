@@ -46,10 +46,10 @@ const Product = () => {
             />
           </div>
         </div>
-        <div>
-          <h1>{currentProduct.name}</h1>
-          <p>{`$${currentProduct.price}`}</p>
-          <div>
+        <div className="mt-12 flex flex-col gap-4">
+          <h1 className="text-2xl">{currentProduct.name}</h1>
+          <p className="font-semibold">{`$${currentProduct.price}`}</p>
+          <div className="flex items-center gap-2">
             <Rating
               onClick={handleRating}
               initialValue={initialValue()}
@@ -61,10 +61,18 @@ const Product = () => {
             />
             <p>{`${currentProduct.reviews.length} reviews`}</p>
           </div>
-          <p>{currentProduct.description}</p>
+          <div className="w-[150px] h-[2px] bg-gray-300"></div>
+          <p className="text-sm">{currentProduct.description}</p>
+          <div className="w-[150px] h-[2px] bg-gray-300"></div>
           <div>
-            <p>{`Category: ${currentProduct.category}`}</p>
-            <p>{`Brand: ${currentProduct.brand}`}</p>
+            <p>
+              <span className="font-semibold">Category: </span>
+              <span className="text-gray-500">{currentProduct.category}</span>
+            </p>
+            <p>
+              <span className="font-semibold">Brand: </span>
+              <span className="text-gray-500">{currentProduct.brand}</span>
+            </p>
             <p>
               {currentProduct.inStock ? (
                 <span className="text-green-500">In stock</span>
@@ -73,6 +81,12 @@ const Product = () => {
               )}
             </p>
           </div>
+          <div className="w-[150px] h-[2px] bg-gray-300"></div>
+          <div>
+            <p>Color: </p>
+            <div></div>
+          </div>
+          <div className="w-[150px] h-[2px] bg-gray-300"></div>
         </div>
       </div>
       <div>Reviews</div>

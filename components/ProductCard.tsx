@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { Rating } from "react-simple-star-rating";
 
-type Product = {
+export type ProductType = {
   id: string;
   name: string;
   description: string;
@@ -37,7 +37,7 @@ type Product = {
   }>;
 };
 
-const ProductCard = ({ product }: { product: Product }) => {
+const ProductCard = ({ product }: { product: ProductType }) => {
   const [rating, setRating] = useState(0);
 
   const handleRating = (rate: number) => {

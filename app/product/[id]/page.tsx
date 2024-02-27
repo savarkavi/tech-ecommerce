@@ -1,5 +1,6 @@
 "use client";
 
+import ReviewCard from "@/components/ReviewCard";
 import { products } from "@/constants";
 import Image from "next/image";
 import { useParams } from "next/navigation";
@@ -7,10 +8,21 @@ import { useState } from "react";
 import { Rating } from "react-simple-star-rating";
 
 const Product = () => {
-  const [rating, setRating] = useState(0);
-
   const { id } = useParams();
   const currentProduct = products.find((product) => product.id === id);
+
+  const [rating, setRating] = useState(0);
+  const [cartProduct, setCartProduct] = useState({
+    id: currentProduct?.id,
+    name: currentProduct?.name,
+    description: currentProduct?.description,
+    category: currentProduct?.category,
+    brand: currentProduct?.brand,
+    quantity: 1,
+    price: currentProduct?.price,
+    selectedImage: currentProduct?.images[0],
+  });
+  const [quantity, setQuantity] = useState(1);
 
   if (!currentProduct) {
     return null;
@@ -18,6 +30,23 @@ const Product = () => {
 
   const handleRating = (rate: number) => {
     setRating(rate);
+  };
+
+  const handleColorChange = (image: {
+    color: string;
+    colorCode: string;
+    image: string;
+  }) => {
+    setCartProduct((prev) => ({ ...prev, selectedImage: image }));
+  };
+
+  const handleIncreaseQuantity = () => {
+    setQuantity((prev) => prev + 1);
+  };
+
+  const handleDecreaseQuantity = () => {
+    if (quantity === 1) return;
+    setQuantity((prev) => prev - 1);
   };
 
   const initialValue = () => {
@@ -33,20 +62,47 @@ const Product = () => {
   };
 
   return (
-    <div className="px-4 py-8">
-      <div>
-        <div className="flex flex-col-reverse gap-8">
-          <div className="w-full border h-[100px]"></div>
-          <div className="relative w-full h-[400px]">
+    <div className="px-4 py-8 2xl:px-0 max-w-[1600px] mx-auto">
+      <div className="lg:flex lg:gap-8 lg:justify-between lg:items-start">
+        <div className="flex flex-col-reverse gap-8 lg:w-[500px] lg:flex-shrink-0 xl:flex-row xl:h-[500px] xl:flex-grow">
+          <div className="w-full border h-[100px] xl:h-full xl:w-[200px] rounded-lg flex xl:flex-col justify-between p-2">
+            {currentProduct.images.map((image) => {
+              return (
+                <div
+                  key={image.color}
+                  className={`${
+                    cartProduct.selectedImage?.color === image.color &&
+                    "border border-green-500"
+                  } rounded-lg p-2 cursor-pointer`}
+                  onClick={() => handleColorChange(image)}
+                >
+                  <div
+                    className={`relative w-[60px] sm:w-[100px] xl:w-full h-[60px] xl:h-[100px]`}
+                  >
+                    <Image
+                      src={image.image}
+                      alt="product image"
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <div className="relative w-full h-[400px] xl:h-[500px]">
             <Image
-              src={currentProduct?.images[0].image}
-              alt={currentProduct?.name}
+              src={
+                cartProduct.selectedImage?.image ||
+                currentProduct.images[0].image
+              }
+              alt={cartProduct.name || currentProduct.name}
               fill
               className="object-contain"
             />
           </div>
         </div>
-        <div className="mt-12 flex flex-col gap-4">
+        <div className="mt-12 flex flex-col gap-4 lg:mt-0 lg:max-w-[850px]">
           <h1 className="text-2xl">{currentProduct.name}</h1>
           <p className="font-semibold">{`$${currentProduct.price}`}</p>
           <div className="flex items-center gap-2">
@@ -61,10 +117,10 @@ const Product = () => {
             />
             <p>{`${currentProduct.reviews.length} reviews`}</p>
           </div>
-          <div className="w-[150px] h-[2px] bg-gray-300"></div>
-          <p className="text-sm">{currentProduct.description}</p>
-          <div className="w-[150px] h-[2px] bg-gray-300"></div>
-          <div>
+          <div className="w-[150px] sm:w-[300px] h-[2px] bg-gray-300 my-4"></div>
+          <p className="text-sm max-w-[500px]">{currentProduct.description}</p>
+          <div className="w-[150px] sm:w-[300px] h-[2px] bg-gray-300 my-4"></div>
+          <div className="flex flex-col gap-2">
             <p>
               <span className="font-semibold">Category: </span>
               <span className="text-gray-500">{currentProduct.category}</span>
@@ -81,15 +137,60 @@ const Product = () => {
               )}
             </p>
           </div>
-          <div className="w-[150px] h-[2px] bg-gray-300"></div>
-          <div>
+          <div className="w-[150px] sm:w-[300px] h-[2px] bg-gray-300 my-4"></div>
+          <div className="flex items-center gap-4">
             <p>Color: </p>
-            <div></div>
+            <div className="flex items-center gap-2">
+              {currentProduct.images.map((image) => {
+                return (
+                  <div
+                    key={image.color}
+                    className={`p-1 rounded-full cursor-pointer ${
+                      cartProduct.selectedImage?.color === image.color &&
+                      "border border-green-500"
+                    }`}
+                    onClick={() => handleColorChange(image)}
+                  >
+                    <div
+                      className="w-6 h-6 rounded-full"
+                      style={{ backgroundColor: image.colorCode }}
+                    ></div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
-          <div className="w-[150px] h-[2px] bg-gray-300"></div>
+          <div className="w-[150px] sm:w-[300px] h-[2px] bg-gray-300 my-4"></div>
+          <div className="flex items-center gap-4">
+            <p>Quantity: </p>
+            <div className="flex items-center gap-3">
+              <div
+                className="border p-2 rounded-md w-6 h-6 flex justify-center items-center cursor-pointer"
+                onClick={handleDecreaseQuantity}
+              >
+                -
+              </div>
+              <span>{quantity}</span>
+              <div
+                className="border p-2 rounded-md w-6 h-6 flex justify-center items-center cursor-pointer"
+                onClick={handleIncreaseQuantity}
+              >
+                +
+              </div>
+            </div>
+          </div>
+          <div className="w-[150px] sm:w-[300px] h-[2px] bg-gray-300 my-4"></div>
+          <button className="px-3 py-2 bg-orange-500 rounded-xl w-[200px]">
+            Add to Cart
+          </button>
         </div>
       </div>
-      <div>Reviews</div>
+      <div className="mt-20">
+        <h2 className="text-2xl">Reviews</h2>
+        {currentProduct.reviews.map((review) => {
+          return <ReviewCard key={review.id} review={review} />;
+        })}
+      </div>
     </div>
   );
 };

@@ -2,17 +2,35 @@
 
 import ReviewCard from "@/components/ReviewCard";
 import { products } from "@/constants";
+import { useCart } from "@/hooks/useCart";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import { Rating } from "react-simple-star-rating";
+
+type SelectedImageType = {
+  color: string;
+  colorCode: string;
+  image: string;
+};
+
+export type CartProductType = {
+  id: string | undefined;
+  name: string | undefined;
+  description: string | undefined;
+  category: string | undefined;
+  brand: string | undefined;
+  quantity: number | undefined;
+  price: number | undefined;
+  selectedImage: SelectedImageType | undefined;
+};
 
 const Product = () => {
   const { id } = useParams();
   const currentProduct = products.find((product) => product.id === id);
 
   const [rating, setRating] = useState(0);
-  const [cartProduct, setCartProduct] = useState({
+  const [cartProduct, setCartProduct] = useState<CartProductType>({
     id: currentProduct?.id,
     name: currentProduct?.name,
     description: currentProduct?.description,
@@ -24,9 +42,13 @@ const Product = () => {
   });
   const [quantity, setQuantity] = useState(1);
 
+  const { cartQuantity, cartProducts, handleAddToCart } = useCart();
+
   if (!currentProduct) {
     return null;
   }
+
+  console.log(cartQuantity, cartProducts);
 
   const handleRating = (rate: number) => {
     setRating(rate);
@@ -180,16 +202,21 @@ const Product = () => {
             </div>
           </div>
           <div className="w-[150px] sm:w-[300px] h-[2px] bg-gray-300 my-4"></div>
-          <button className="px-3 py-2 bg-orange-500 rounded-xl w-[200px]">
+          <button
+            className="px-3 py-2 bg-orange-500 rounded-xl w-[200px]"
+            onClick={() => handleAddToCart(cartProduct)}
+          >
             Add to Cart
           </button>
         </div>
       </div>
-      <div className="mt-20">
-        <h2 className="text-2xl">Reviews</h2>
-        {currentProduct.reviews.map((review) => {
-          return <ReviewCard key={review.id} review={review} />;
-        })}
+      <div className="mt-20 2xl:mt-24">
+        <h2 className="text-2xl my-8">Reviews</h2>
+        <div className="flex flex-col gap-20">
+          {currentProduct.reviews.map((review) => {
+            return <ReviewCard key={review.id} review={review} />;
+          })}
+        </div>
       </div>
     </div>
   );

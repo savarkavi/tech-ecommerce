@@ -1,5 +1,7 @@
 import Image from "next/image";
 import { ProductType } from "./ProductCard";
+import { Rating } from "react-simple-star-rating";
+import moment from "moment";
 
 type User = {
   id: string;
@@ -10,7 +12,7 @@ type User = {
   hashedPassword: null | string; // Assuming hashedPassword can be null or a string
   createdAt: string;
   updatedAt: string;
-  role: "USER"; // Assuming role is always "USER"
+  role: string; // Assuming role is always "USER"
 };
 
 type Review = {
@@ -26,7 +28,7 @@ type Review = {
 const ReviewCard = ({ review }: { review: Review }) => {
   return (
     <div>
-      <div>
+      <div className="flex items-center gap-4">
         <Image
           src={review.user.image}
           alt="user image"
@@ -34,7 +36,20 @@ const ReviewCard = ({ review }: { review: Review }) => {
           height={24}
           className="rounded-full"
         />
+        <h2 className="font-semibold">{review.user.name}</h2>
+        <p className="text-gray-500">{`${moment(
+          review.createdDate
+        ).fromNow()}`}</p>
       </div>
+      <Rating
+        initialValue={review.rating}
+        allowFraction={true}
+        style={{
+          width: "100%",
+        }}
+        SVGstyle={{ display: "inline", width: "20px" }}
+      />
+      <p className="text-sm">{review.comment}</p>
     </div>
   );
 };

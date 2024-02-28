@@ -58,7 +58,12 @@ const Navbar = () => {
             className="md:hidden cursor-pointer"
             onClick={handleSearchClick}
           />
-          <CiShoppingCart />
+          <div className="relative">
+            <CiShoppingCart />
+            <div className="w-6 h-6 text-white text-[12px] rounded-full bg-black flex justify-center items-center absolute -top-3 -right-4">
+              0
+            </div>
+          </div>
           <CgProfile />
         </div>
       </div>

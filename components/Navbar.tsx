@@ -4,9 +4,13 @@ import Image from "next/image";
 import { CiSearch, CiShoppingCart } from "react-icons/ci";
 import { CgProfile } from "react-icons/cg";
 import { useEffect, useState } from "react";
+import { useCart } from "@/hooks/useCart";
+import Link from "next/link";
 
 const Navbar = () => {
   const [isSearchHidden, setIsSearchHidden] = useState(true);
+
+  const { cartQuantity } = useCart();
 
   useEffect(() => {
     const handleResize = () => {
@@ -27,7 +31,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="p-4 bg-gray-200 shadow-lg">
+    <div className="p-4 bg-gray-200 shadow-lg sticky top-0 z-[99]">
       <div className="max-w-[1600px] mx-auto flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Image src="/logo.png" alt="logo" width={50} height={50} />
@@ -58,12 +62,12 @@ const Navbar = () => {
             className="md:hidden cursor-pointer"
             onClick={handleSearchClick}
           />
-          <div className="relative">
+          <Link href="/cart" className="relative">
             <CiShoppingCart />
             <div className="w-6 h-6 text-white text-[12px] rounded-full bg-black flex justify-center items-center absolute -top-3 -right-4">
-              0
+              {cartQuantity}
             </div>
-          </div>
+          </Link>
           <CgProfile />
         </div>
       </div>

@@ -6,9 +6,14 @@ import React from "react";
 import QuantityCounter from "./QuantityCounter";
 
 const CartItems = () => {
-  const { cartProducts } = useCart();
+  const { cartProducts, handleIncCartQty, handleDecCartQty } = useCart();
 
-  if (!cartProducts) return <div>Cart is empty</div>;
+  if (!cartProducts)
+    return (
+      <div className="lg:hidden w-full flex justify-center items-center">
+        <span>Cart is empty</span>
+      </div>
+    );
 
   return (
     <div className="lg:hidden">
@@ -31,7 +36,12 @@ const CartItems = () => {
                 <p>{`$${product.price}`}</p>
               </div>
               <div className="flex flex-col gap-4">
-                <QuantityCounter quantity={product.quantity} />
+                <QuantityCounter
+                  quantity={product.quantity}
+                  handleIncreaseQuantity={handleIncCartQty}
+                  handleDecreaseQuantity={handleDecCartQty}
+                  productId={product.id}
+                />
                 <p className="underline text-sm">Remove</p>
               </div>
             </div>

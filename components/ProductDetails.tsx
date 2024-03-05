@@ -206,6 +206,7 @@ const ProductDetails = ({
                 handleDecreaseQuantity={handleDecreaseQuantity}
                 handleIncreaseQuantity={handleIncreaseQuantity}
                 quantity={cartProduct.quantity}
+                productId={cartProduct.id}
               />
             </div>
           )}

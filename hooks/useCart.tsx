@@ -6,6 +6,8 @@ type cartContextType = {
   cartQuantity: number;
   cartProducts: CartProductType[] | null;
   handleAddToCart: (product: CartProductType, qty: number) => void;
+  handleIncCartQty: (productId: string) => void;
+  handleDecCartQty: (productId: string) => void;
 };
 
 export const cartContext = createContext<cartContextType | null>(null);
@@ -31,7 +33,7 @@ export const CartContextProvider = (props: any) => {
 
   const handleAddToCart = (product: CartProductType, qty: number) => {
     let updatedCart;
-    let CartQty = cartQuantity + qty;
+    let cartQty = cartQuantity + qty;
     if (!cartProducts) {
       updatedCart = [product];
       setCartProducts(updatedCart);
@@ -40,27 +42,61 @@ export const CartContextProvider = (props: any) => {
       setCartProducts(updatedCart);
     }
 
-    setCartQuantity(CartQty);
+    setCartQuantity(cartQty);
     localStorage.setItem("cart", JSON.stringify(updatedCart));
-    localStorage.setItem("cartQty", JSON.stringify(CartQty));
+    localStorage.setItem("cartQty", JSON.stringify(cartQty));
     toast.success("Product added to cart");
   };
 
-  const handleIncCartQty = (productId: string, qty: number) => {
+  const handleIncCartQty = (productId: string) => {
     let updatedCart;
-    let CartQty = cartQuantity + qty;
+    let cartQty = cartQuantity + 1;
 
     if (!cartProducts) {
+      return;
     }
 
-    const product = cartProducts?.find((product) => product.id === productId);
-    updatedCart = [...cartProducts];
+    if (cartProducts) {
+      const product = cartProducts?.find((product) => product.id === productId);
+      product.quantity = product.quantity + 1;
+      updatedCart = cartProducts.filter((product) => product.id !== productId);
+      updatedCart = [...updatedCart, product];
+      setCartProducts(updatedCart);
+      setCartQuantity(cartQty);
+
+      localStorage.setItem("cart", JSON.stringify(updatedCart));
+      localStorage.setItem("cartQty", JSON.stringify(cartQty));
+    }
+  };
+
+  const handleDecCartQty = (productId: string) => {
+    let updatedCart;
+    let cartQty = cartQuantity - 1;
+
+    if (!cartProducts) {
+      return;
+    }
+
+    if (cartProducts) {
+      const product = cartProducts?.find((product) => product.id === productId);
+      if (product.quantity === 1) return;
+      product.quantity = product.quantity - 1;
+      updatedCart = cartProducts.filter((product) => product.id !== productId);
+      updatedCart = [...updatedCart, product];
+      setCartProducts(updatedCart);
+      setCartQuantity(cartQty);
+
+      localStorage.setItem("cart", JSON.stringify(updatedCart));
+      localStorage.setItem("cartQty", JSON.stringify(cartQty));
+    }
   };
 
   const value = {
     cartQuantity,
     cartProducts,
     handleAddToCart,
+    handleIncCartQty,
+    handleDecCartQty,
   };
 
   return <cartContext.Provider value={value} {...props} />;

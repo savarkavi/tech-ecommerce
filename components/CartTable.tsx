@@ -15,9 +15,14 @@ import QuantityCounter from "./QuantityCounter";
 import Link from "next/link";
 
 const CartTable = () => {
-  const { cartProducts } = useCart();
+  const { cartProducts, handleIncCartQty, handleDecCartQty } = useCart();
 
-  if (!cartProducts) return <div>Cart is empty</div>;
+  if (!cartProducts)
+    return (
+      <div className="lg:flex w-full hidden justify-center items-center">
+        <span>Cart is empty</span>
+      </div>
+    );
 
   return (
     <Table>
@@ -56,11 +61,16 @@ const CartTable = () => {
               </TableCell>
               <TableCell>{`$${product.price}`}</TableCell>
               <TableCell>
-                <QuantityCounter quantity={product.quantity} />
+                <QuantityCounter
+                  handleIncreaseQuantity={handleIncCartQty}
+                  handleDecreaseQuantity={handleDecCartQty}
+                  quantity={product.quantity}
+                  productId={product.id}
+                />
               </TableCell>
-              <TableCell className="text-right">{`$${
+              <TableCell className="text-right">{`$${(
                 product.price * product.quantity
-              }`}</TableCell>
+              ).toFixed(2)}`}</TableCell>
             </TableRow>
           );
         })}

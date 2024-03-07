@@ -5,7 +5,7 @@ import { useCart } from "@/hooks/useCart";
 const CartItemsTotal = () => {
   const { cartProducts } = useCart();
 
-  if (!cartProducts) return null;
+  if (!cartProducts || cartProducts.length === 0) return null;
 
   const priceArr = cartProducts.map(
     (product) => product.price * product.quantity

@@ -3,7 +3,6 @@
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -15,9 +14,14 @@ import QuantityCounter from "./QuantityCounter";
 import Link from "next/link";
 
 const CartTable = () => {
-  const { cartProducts, handleIncCartQty, handleDecCartQty } = useCart();
+  const {
+    cartProducts,
+    handleIncCartQty,
+    handleDecCartQty,
+    handleRemoveFromCart,
+  } = useCart();
 
-  if (!cartProducts)
+  if (!cartProducts || cartProducts.length === 0)
     return (
       <div className="lg:flex w-full hidden justify-center items-center">
         <span>Cart is empty</span>
@@ -55,7 +59,12 @@ const CartTable = () => {
                     >
                       {product.name}
                     </Link>
-                    <p className="underline">Remove</p>
+                    <p
+                      className="underline cursor-pointer"
+                      onClick={() => handleRemoveFromCart(product)}
+                    >
+                      Remove
+                    </p>
                   </div>
                 </div>
               </TableCell>

@@ -3,11 +3,12 @@
 import ReviewCard from "@/components/ReviewCard";
 import { useCart } from "@/hooks/useCart";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Rating } from "react-simple-star-rating";
 import { ProductType } from "./ProductCard";
 import QuantityCounter from "./QuantityCounter";
+import Link from "next/link";
+import toast from "react-hot-toast";
 
 export type SelectedImageType = {
   color: string;
@@ -28,8 +29,10 @@ export type CartProductType = {
 
 const ProductDetails = ({
   currentProduct,
+  user,
 }: {
   currentProduct: ProductType;
+  user: string;
 }) => {
   const [rating, setRating] = useState(0);
   const [isAddedToCart, setIsAddedToCart] = useState(false);
@@ -46,8 +49,6 @@ const ProductDetails = ({
 
   const { cartQuantity, cartProducts, handleAddToCart } = useCart();
 
-  const router = useRouter();
-
   useEffect(() => {
     const isAdded = cartProducts?.find(
       (product) => product.id === currentProduct?.id
@@ -59,6 +60,18 @@ const ProductDetails = ({
       setIsAddedToCart(false);
     }
   }, [cartProducts, currentProduct]);
+
+  const initialValue = () => {
+    const ratingsArray = currentProduct.reviews.map((review) => review.rating);
+
+    if (ratingsArray.length === 0) {
+      return 0;
+    } else {
+      const avgRating =
+        ratingsArray.reduce((acc, curr) => acc + curr, 0) / ratingsArray.length;
+      return avgRating;
+    }
+  };
 
   const handleRating = (rate: number) => {
     setRating(rate);
@@ -83,18 +96,6 @@ const ProductDetails = ({
     setCartProduct((prev) => {
       return { ...prev, quantity: prev.quantity - 1 };
     });
-  };
-
-  const initialValue = () => {
-    const ratingsArray = currentProduct.reviews.map((review) => review.rating);
-
-    if (ratingsArray.length === 0) {
-      return 0;
-    } else {
-      const avgRating =
-        ratingsArray.reduce((acc, curr) => acc + curr, 0) / ratingsArray.length;
-      return avgRating;
-    }
   };
 
   return (
@@ -212,16 +213,20 @@ const ProductDetails = ({
           )}
           <div className="w-[150px] sm:w-[300px] h-[2px] bg-gray-300 my-4"></div>
           {isAddedToCart ? (
-            <button
+            <Link
+              href="/cart"
               className="px-3 py-2 bg-orange-500 rounded-xl w-[200px]"
-              onClick={() => router.push("/cart")}
             >
               View Cart
-            </button>
+            </Link>
           ) : (
             <button
               className="px-3 py-2 bg-orange-500 rounded-xl w-[200px]"
-              onClick={() => handleAddToCart(cartProduct, cartProduct.quantity)}
+              onClick={
+                JSON.parse(user)
+                  ? () => handleAddToCart(cartProduct, cartProduct.quantity)
+                  : () => toast.error("You have to Sign In first")
+              }
             >
               Add to Cart
             </button>

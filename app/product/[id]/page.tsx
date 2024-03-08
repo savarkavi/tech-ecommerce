@@ -1,18 +1,10 @@
-"use client";
+import Product from "@/components/Product";
+import { currentUser } from "@clerk/nextjs";
 
-import ProductDetails from "@/components/ProductDetails";
-import { products } from "@/constants";
-import { useParams } from "next/navigation";
+const ProductPage = async () => {
+  const user = await currentUser();
 
-const Product = () => {
-  const { id } = useParams();
-  const currentProduct = products.find((product) => product.id === id);
-
-  if (!currentProduct) {
-    return null;
-  }
-
-  return <ProductDetails currentProduct={currentProduct} />;
+  return <Product user={JSON.stringify(user)} />;
 };
 
-export default Product;
+export default ProductPage;

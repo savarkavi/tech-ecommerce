@@ -7,12 +7,10 @@ type User = {
   id: string;
   name: string;
   email: string;
-  emailVerified: null | string; // Assuming emailVerified can be null or a string
   image: string;
-  hashedPassword: null | string; // Assuming hashedPassword can be null or a string
   createdAt: string;
   updatedAt: string;
-  role: string; // Assuming role is always "USER"
+  role: string;
 };
 
 type Review = {

@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { createUser } from "@/lib/actions/user";
 import { clerkClient } from "@clerk/nextjs";
+import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
@@ -77,6 +78,8 @@ export async function POST(req: Request) {
         },
       });
     }
+
+    return NextResponse.json({ message: "ok", user: newUser });
   }
 
   return new Response("", { status: 200 });

@@ -1,4 +1,4 @@
-import { CartProductType } from "@/app/product/[id]/page";
+import { CartProductType } from "@/components/ProductDetails";
 import { createContext, useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -73,15 +73,19 @@ export const CartContextProvider = (props: any) => {
     }
 
     if (cartProducts) {
-      const product = cartProducts?.find((product) => product.id === productId);
-      product.quantity = product.quantity + 1;
-      updatedCart = cartProducts.filter((product) => product.id !== productId);
-      updatedCart = [...updatedCart, product];
-      setCartProducts(updatedCart);
-      setCartQuantity(cartQty);
+      const product = cartProducts.find((product) => product.id === productId);
+      if (product) {
+        product.quantity = product.quantity + 1;
+        updatedCart = cartProducts.filter(
+          (product) => product.id !== productId
+        );
+        updatedCart = [...updatedCart, product];
+        setCartProducts(updatedCart);
+        setCartQuantity(cartQty);
 
-      localStorage.setItem("cart", JSON.stringify(updatedCart));
-      localStorage.setItem("cartQty", JSON.stringify(cartQty));
+        localStorage.setItem("cart", JSON.stringify(updatedCart));
+        localStorage.setItem("cartQty", JSON.stringify(cartQty));
+      }
     }
   };
 
@@ -95,15 +99,19 @@ export const CartContextProvider = (props: any) => {
 
     if (cartProducts) {
       const product = cartProducts?.find((product) => product.id === productId);
-      if (product.quantity === 1) return;
-      product.quantity = product.quantity - 1;
-      updatedCart = cartProducts.filter((product) => product.id !== productId);
-      updatedCart = [...updatedCart, product];
-      setCartProducts(updatedCart);
-      setCartQuantity(cartQty);
+      if (product) {
+        if (product.quantity === 1) return;
+        product.quantity = product.quantity - 1;
+        updatedCart = cartProducts.filter(
+          (product) => product.id !== productId
+        );
+        updatedCart = [...updatedCart, product];
+        setCartProducts(updatedCart);
+        setCartQuantity(cartQty);
 
-      localStorage.setItem("cart", JSON.stringify(updatedCart));
-      localStorage.setItem("cartQty", JSON.stringify(cartQty));
+        localStorage.setItem("cart", JSON.stringify(updatedCart));
+        localStorage.setItem("cartQty", JSON.stringify(cartQty));
+      }
     }
   };
 

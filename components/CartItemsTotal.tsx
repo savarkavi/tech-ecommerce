@@ -1,6 +1,7 @@
 "use client";
 
 import { useCart } from "@/hooks/useCart";
+import Checkout from "./Checkout";
 
 const CartItemsTotal = () => {
   const { cartProducts } = useCart();
@@ -23,7 +24,7 @@ const CartItemsTotal = () => {
       <p className="text-sm">
         Taxes and shipping charges calculate on checkout
       </p>
-      <button className="p-2 bg-orange-500 rounded-lg">Checkout</button>
+      <Checkout />
     </div>
   );
 };

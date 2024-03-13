@@ -68,7 +68,7 @@ const CartTable = () => {
                   </div>
                 </div>
               </TableCell>
-              <TableCell>{`$${product.price}`}</TableCell>
+              <TableCell>{`₹${product.price}`}</TableCell>
               <TableCell>
                 <QuantityCounter
                   handleIncreaseQuantity={handleIncCartQty}
@@ -77,7 +77,7 @@ const CartTable = () => {
                   productId={product.id}
                 />
               </TableCell>
-              <TableCell className="text-right">{`$${(
+              <TableCell className="text-right">{`₹${(
                 product.price * product.quantity
               ).toFixed(2)}`}</TableCell>
             </TableRow>

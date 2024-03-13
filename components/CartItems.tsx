@@ -38,7 +38,7 @@ const CartItems = () => {
                 <h1 className="text-gray-600 text-sm sm:text-base">
                   {product.name}
                 </h1>
-                <p>{`$${product.price}`}</p>
+                <p>{`₹${product.price}`}</p>
               </div>
               <div className="flex flex-col gap-4">
                 <QuantityCounter

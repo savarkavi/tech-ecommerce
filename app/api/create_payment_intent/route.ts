@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
   const orderData = {
     userId: user.publicMetadata.userId,
     amount: total,
-    currency: "usd",
+    currency: "inr",
     status: "pending",
     deliveryStatus: "pending",
     paymentIntentId: payment_intent_id,
@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
     if (currentIntent) {
       const updatedIntent = await stripe.paymentIntents.update(
         payment_intent_id,
-        { amount: total }
+        { amount: total * 100 }
       );
 
       const existingOrder = await Order.findOne({
@@ -55,9 +55,10 @@ export async function POST(req: NextRequest) {
     }
   } else {
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: total,
-      currency: "usd",
+      amount: total * 100,
+      currency: "inr",
       automatic_payment_methods: { enabled: true },
+      description: "Test transaction for ecommerce project",
     });
 
     orderData.paymentIntentId = paymentIntent.id;

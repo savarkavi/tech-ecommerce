@@ -11,6 +11,7 @@ type cartContextType = {
   handleDecCartQty: (productId: string) => void;
   handleRemoveFromCart: (product: CartProductType) => void;
   handleSetPaymentIntent: (val: string | null) => void;
+  handleClearCart: () => void;
 };
 
 export const cartContext = createContext<cartContextType | null>(null);
@@ -30,11 +31,14 @@ export const CartContextProvider = (props: any) => {
       return;
     } else if (!totalCartItems) {
       setCartQuantity(0);
-    } else if (!techCartPaymentIntent) {
-      setPaymentIntent(null);
     } else {
       setCartProducts(JSON.parse(cartItems));
       setCartQuantity(JSON.parse(totalCartItems));
+    }
+
+    if (!techCartPaymentIntent) {
+      setPaymentIntent(null);
+    } else {
       setPaymentIntent(JSON.parse(techCartPaymentIntent));
     }
   }, []);
@@ -127,6 +131,16 @@ export const CartContextProvider = (props: any) => {
     }
   };
 
+  const handleClearCart = () => {
+    localStorage.removeItem("cart");
+    localStorage.removeItem("cartQty");
+    localStorage.removeItem("paymentIntent");
+
+    setCartProducts(null);
+    setCartQuantity(0);
+    setPaymentIntent(null);
+  };
+
   const value = {
     cartQuantity,
     cartProducts,
@@ -136,6 +150,7 @@ export const CartContextProvider = (props: any) => {
     handleDecCartQty,
     handleRemoveFromCart,
     handleSetPaymentIntent,
+    handleClearCart,
   };
 
   return <cartContext.Provider value={value} {...props} />;

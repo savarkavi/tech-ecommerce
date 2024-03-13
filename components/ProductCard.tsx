@@ -86,7 +86,7 @@ const ProductCard = ({ product }: { product: ProductType }) => {
           SVGstyle={{ display: "inline", width: "25px" }}
         />
         <p>{`${product.reviews.length} reviews`}</p>
-        <p className="font-semibold">{`$${product.price}`}</p>
+        <p className="font-semibold">{`₹${product.price}`}</p>
       </div>
     </Link>
   );

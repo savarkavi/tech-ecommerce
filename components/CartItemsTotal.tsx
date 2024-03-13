@@ -18,7 +18,7 @@ const CartItemsTotal = () => {
     <div className="flex flex-col p-4 gap-4 mt-10 max-w-[400px] md:mt-16 lg:mt-10">
       <div className="flex justify-between text-lg font-semibold">
         <h2>Subtotal</h2>
-        <p>{`$${total.toFixed(2)}`}</p>
+        <p>{`₹${total.toFixed(2)}`}</p>
       </div>
       <p className="text-sm">
         Taxes and shipping charges calculate on checkout

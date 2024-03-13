@@ -2,12 +2,22 @@
 
 import { useCart } from "@/hooks/useCart";
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import {
+  Appearance,
+  StripeElementsOptions,
+  loadStripe,
+} from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
+import CheckoutForm from "./CheckoutForm";
 
 const CheckoutClient = () => {
   const { cartProducts, paymentIntent, handleSetPaymentIntent } = useCart();
+  const [clientSecret, setClientSecret] = useState("");
 
-  console.log(paymentIntent);
+  const stripePromise = loadStripe(
+    process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string
+  );
 
   useEffect(() => {
     if (cartProducts) {
@@ -27,6 +37,7 @@ const CheckoutClient = () => {
           });
 
           handleSetPaymentIntent(res.data.paymentIntent.id);
+          setClientSecret(res.data.paymentIntent.client_secret);
         } catch (error) {
           console.log(error);
         }
@@ -36,7 +47,23 @@ const CheckoutClient = () => {
     }
   }, [cartProducts, paymentIntent, handleSetPaymentIntent]);
 
-  return <div>CheckoutClient</div>;
+  const appearance: Appearance = {
+    theme: "stripe",
+  };
+  const options: StripeElementsOptions = {
+    clientSecret,
+    appearance,
+  };
+
+  return (
+    <div className="w-full max-w-[800px] mx-auto mt-28">
+      {clientSecret && (
+        <Elements options={options} stripe={stripePromise}>
+          <CheckoutForm clientSecret={clientSecret} />
+        </Elements>
+      )}
+    </div>
+  );
 };
 
 export default CheckoutClient;

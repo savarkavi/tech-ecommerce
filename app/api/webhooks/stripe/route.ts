@@ -2,6 +2,7 @@ import { NextApiRequest } from "next";
 import Stripe from "stripe";
 import { buffer } from "micro";
 import { NextResponse } from "next/server";
+import Order from "@/lib/models/order";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
@@ -28,13 +29,14 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: err.message }, { status: 400 });
   }
 
-  switch (event.type) {
-    case "charge.succeeded":
-      const chargeSucceeded = event.data.object;
-      console.log(chargeSucceeded);
-      break;
-    default:
-      console.log(`Unhandled event type ${event.type}`);
+  if (event.type === "charge.succeeded") {
+    const charge = event.data.object;
+    await Order.findOneAndUpdate(
+      { paymentIntentId: charge.payment_intent },
+      { status: "complete", address: charge.billing_details.address }
+    );
+
+    return NextResponse.json({ message: "ok" });
   }
 
   return NextResponse.json({ received: true });

@@ -5,9 +5,9 @@ import { NextResponse } from "next/server";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
-export default async function POST(req: NextApiRequest) {
-  const buf = await buffer(req);
-  const sig = req.headers["stripe-signature"];
+export async function POST(req: Request) {
+  const body = await req.text();
+  const sig = req.headers.get("stripe-signature") as string;
 
   if (!sig) {
     return NextResponse.json(
@@ -20,7 +20,7 @@ export default async function POST(req: NextApiRequest) {
 
   try {
     event = stripe.webhooks.constructEvent(
-      buf,
+      body,
       sig,
       process.env.STRIPE_WEBHOOK_SECRET!
     );

@@ -25,7 +25,7 @@ export default async function POST(req: NextApiRequest) {
   let event: Stripe.Event;
 
   try {
-    event = Stripe.webhooks.constructEvent(
+    event = stripe.webhooks.constructEvent(
       buf,
       sig,
       process.env.STRIPE_WEBHOOK_SECRET!

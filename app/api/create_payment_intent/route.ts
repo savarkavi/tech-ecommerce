@@ -24,8 +24,6 @@ export async function POST(req: NextRequest) {
   };
 
   if (payment_intent_id) {
-    console.log(payment_intent_id);
-
     const currentIntent = await stripe.paymentIntents.retrieve(
       payment_intent_id
     );

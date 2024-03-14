@@ -5,12 +5,12 @@ export default authMiddleware({
     "/",
     /\/product(\/\w+)?/,
     "/api/webhooks/clerk",
-    "api/webhooks/stripe",
+    "/api/webhooks/stripe",
   ],
   ignoredRoutes: [
     "/no-auth-in-this-route",
     "/api/webhooks/clerk",
-    "api/webhooks/stripe",
+    "/api/webhooks/stripe",
   ],
 });
 

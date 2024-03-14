@@ -29,14 +29,18 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: err.message }, { status: 400 });
   }
 
-  if (event.type === "charge.succeeded") {
-    const charge = event.data.object;
-    await Order.findOneAndUpdate(
-      { paymentIntentId: charge.payment_intent },
-      { status: "complete", address: charge.billing_details.address }
-    );
+  switch (event.type) {
+    case "charge.succeeded":
+      const charge = event.data.object;
+      await Order.findOneAndUpdate(
+        { paymentIntentId: charge.payment_intent },
+        { status: "complete", address: charge.billing_details.address }
+      );
+      break;
+    default:
+      console.log(`Unhandled event type ${event.type}`);
 
-    return NextResponse.json({ message: "ok" });
+      return NextResponse.json({ message: "Ok" });
   }
 
   return NextResponse.json({ received: true });

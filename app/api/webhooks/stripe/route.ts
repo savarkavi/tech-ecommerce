@@ -32,10 +32,12 @@ export async function POST(req: Request) {
   switch (event.type) {
     case "charge.succeeded":
       const charge = event.data.object;
-      await Order.findOneAndUpdate(
-        { paymentIntentId: charge.payment_intent },
-        { status: "complete", address: charge.billing_details.address }
-      );
+      console.log(charge);
+
+      //   await Order.findOneAndUpdate(
+      //     { paymentIntentId: charge.payment_intent },
+      //     { status: "complete", address: charge.billing_details.address }
+      //   );
       break;
     default:
       console.log(`Unhandled event type ${event.type}`);

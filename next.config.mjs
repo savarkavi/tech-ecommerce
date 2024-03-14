@@ -7,6 +7,7 @@ const nextConfig = {
       "img.clerk.com",
     ],
   },
+  bodyParser: false,
 };
 
 export default nextConfig;

@@ -8,6 +8,7 @@ import {
 import { StripePaymentElementOptions } from "@stripe/stripe-js";
 import { useCart } from "@/hooks/useCart";
 import toast from "react-hot-toast";
+import { useRouter } from "next/router";
 
 export default function CheckoutForm({
   clientSecret,
@@ -52,8 +53,6 @@ export default function CheckoutForm({
     e.preventDefault();
 
     if (!stripe || !elements) {
-      // Stripe.js hasn't yet loaded.
-      // Make sure to disable form submission until Stripe.js has loaded.
       return;
     }
 

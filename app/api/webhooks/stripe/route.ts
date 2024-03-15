@@ -1,6 +1,7 @@
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
 import Order from "@/lib/models/order";
+import { updateOrder } from "@/lib/actions/order";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
@@ -30,10 +31,10 @@ export async function POST(req: Request) {
   if (event.type === "charge.succeeded") {
     const charge = event.data.object;
 
-    await Order.findOneAndUpdate(
-      { paymentIntentId: charge.payment_intent },
-      { status: "complete", address: charge.billing_details.address }
-    );
+    if (charge.payment_intent && typeof charge.payment_intent === "string") {
+      await updateOrder(charge.payment_intent, charge.billing_details.address);
+    }
+
     return NextResponse.json({ message: "Event recieved" });
   }
 

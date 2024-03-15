@@ -48,8 +48,8 @@ export async function POST(req: Request) {
     //     { status: 500 }
     //   );
     // }
-  } else {
-    console.log(`Unhandled event type ${event.type}`);
-    return NextResponse.json({ message: "Ok" });
+    return NextResponse.json({ message: "Event recieved" });
   }
+
+  return NextResponse.json({ message: "Ok" });
 }

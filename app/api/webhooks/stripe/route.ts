@@ -31,15 +31,16 @@ export async function POST(req: Request) {
     case "charge.succeeded":
       const charge = event.data.object;
 
-      const updateOrder = async () => {
-        await Order.findOneAndUpdate(
-          { paymentIntentId: charge.payment_intent },
-          { status: "complete", address: charge.billing_details.address }
-        );
-      };
-
       try {
-        await updateOrder();
+        await Order.create({
+          userId: "asfdaf",
+          amount: 200,
+          currency: "inr",
+          status: "pending",
+          deliveryStatus: "pending",
+          paymentIntentId: "asdadscsdcfs",
+          products: [{ name: "iphone" }],
+        });
         return NextResponse.json({ received: true });
       } catch (error) {
         console.error("Error updating order:", error);

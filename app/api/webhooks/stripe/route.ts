@@ -33,14 +33,22 @@ export async function POST(req: Request) {
     case "charge.succeeded":
       const charge = event.data.object;
 
-      const updateOrder = async () => {
+      // const updateOrder = async () => {
+      //   await Order.findOneAndUpdate(
+      //     { paymentIntentId: charge.payment_intent },
+      //     { status: "complete", address: charge.billing_details.address }
+      //   );
+      // };
+
+      // updateOrder().then(() => console.log("Order updated successfully"));
+      try {
         await Order.findOneAndUpdate(
           { paymentIntentId: charge.payment_intent },
           { status: "complete", address: charge.billing_details.address }
         );
-      };
-
-      updateOrder().then(() => console.log("Order updated successfully"));
+      } catch (error) {
+        console.log(error);
+      }
       break;
     default:
       console.log(`Unhandled event type ${event.type}`);

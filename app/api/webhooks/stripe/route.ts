@@ -1,6 +1,4 @@
-import { NextApiRequest } from "next";
 import Stripe from "stripe";
-import { buffer } from "micro";
 import { NextResponse } from "next/server";
 import Order from "@/lib/models/order";
 

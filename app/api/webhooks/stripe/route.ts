@@ -29,25 +29,11 @@ export async function POST(req: Request) {
 
   if (event.type === "charge.succeeded") {
     const charge = event.data.object;
-    console.log(charge);
 
-    // const updateOrder = async () => {
-    //   await Order.findOneAndUpdate(
-    //     { paymentIntentId: charge.payment_intent },
-    //     { status: "complete", address: charge.billing_details.address }
-    //   );
-    // };
-
-    // try {
-    //   await updateOrder();
-    //   return NextResponse.json({ received: true });
-    // } catch (error) {
-    //   console.error("Error updating order:", error);
-    //   return NextResponse.json(
-    //     { error: "Failed to update order" },
-    //     { status: 500 }
-    //   );
-    // }
+    await Order.findOneAndUpdate(
+      { paymentIntentId: charge.payment_intent },
+      { status: "complete", address: charge.billing_details.address }
+    );
     return NextResponse.json({ message: "Event recieved" });
   }
 

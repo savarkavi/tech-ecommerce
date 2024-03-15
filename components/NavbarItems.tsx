@@ -94,7 +94,7 @@ const NavbarItems = ({ clerkUser }: { clerkUser: string }) => {
               </Link>
             </SignedOut>
             <SignedIn>
-              <Profile currentUser={JSON.stringify(currentUser)} />
+              <Profile currentUser={currentUser} />
             </SignedIn>
           </div>
         </div>

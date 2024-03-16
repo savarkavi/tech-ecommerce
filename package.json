@@ -16,6 +16,7 @@
     "axios": "^1.6.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "firebase": "^10.9.0",
     "lucide-react": "^0.343.0",
     "micro": "^10.0.1",
     "moment": "^2.30.1",

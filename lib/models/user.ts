@@ -18,6 +18,12 @@ const userSchema = new mongoose.Schema(
         ref: "Order",
       },
     ],
+    reviews: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Review",
+      },
+    ],
   },
   { timestamps: true }
 );

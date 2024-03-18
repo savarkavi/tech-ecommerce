@@ -42,14 +42,13 @@ export const categories = [
 ];
 
 export const colors = [
-  { name: "White" },
-  { name: "Black" },
-  { name: "Silver" },
-  { name: "Grey" },
-  { name: "Red" },
-  { name: "Gold" },
-  { name: "Blue" },
-  { name: "Graphite" },
+  { name: "White", code: "#ffffff" },
+  { name: "Black", code: "#000000" },
+  { name: "Silver", code: "#c0c0c0" },
+  { name: "Grey", code: "#808080" },
+  { name: "Red", code: "#ff0000" },
+  { name: "Gold", code: "#ffd700" },
+  { name: "Blue", code: "#0000ff" },
 ];
 
 export const products = [

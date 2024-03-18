@@ -2,28 +2,37 @@
 
 import { categories, colors } from "@/constants";
 import React, { useState } from "react";
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
+import { firebaseApp } from "@/lib/firebase";
+import toast from "react-hot-toast";
+import { createProduct } from "@/lib/actions/product";
 
 type ImageType = {
   color: string;
   colorCode: string;
-  image: string;
+  image: File | string | null;
 };
 
 type ProductDataType = {
   name: string;
   desc: string;
-  price: string;
+  price: number;
   brand: string;
   category: string;
   inStock: boolean;
-  images: ImageType[] | [];
+  images: ImageType[];
 };
 
 const AddProducts = () => {
   const [productData, setProductData] = useState<ProductDataType>({
     name: "",
     desc: "",
-    price: "",
+    price: 0,
     brand: "",
     category: "Phone",
     inStock: true,
@@ -58,16 +67,127 @@ const AddProducts = () => {
   };
 
   const handleImageChange = (val: ImageType) => {
-    setProductData((prevState) => ({
-      ...prevState!,
-      images: [...prevState.images, val],
+    if (productData.images.length === 0) {
+      setProductData((prev) => ({
+        ...prev,
+        images: [val],
+      }));
+
+      return;
+    }
+
+    const updatedImages = productData.images.map((img) => {
+      if (img.color === val.color) {
+        return { ...img, image: val.image };
+      } else {
+        return img;
+      }
+    });
+
+    const isValPresent = updatedImages.some((img) => img.color === val.color);
+
+    if (!isValPresent) {
+      setProductData((prev) => ({
+        ...prev,
+        images: [...updatedImages, val],
+      }));
+    } else {
+      setProductData((prev) => ({
+        ...prev,
+        images: updatedImages,
+      }));
+    }
+  };
+
+  const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (productData.images.length === 0) {
+      return toast.error("Please add atleast one product image");
+    }
+
+    const handleImageUpload = async () => {
+      toast("Adding product, please wait...");
+
+      let imageUrls: ImageType[] = [];
+
+      try {
+        for (const item of productData.images) {
+          if (item.image !== null && typeof item.image !== "string") {
+            const storage = getStorage(firebaseApp);
+            const storageRef = ref(storage, `products/${item.image.name}`);
+
+            const uploadTask = uploadBytesResumable(storageRef, item.image);
+
+            await new Promise((resolve, reject) => {
+              uploadTask.on(
+                "state_changed",
+                (snapshot) => {
+                  const progress =
+                    (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                  console.log("Upload is " + progress + "% done");
+                  switch (snapshot.state) {
+                    case "paused":
+                      console.log("Upload is paused");
+                      break;
+                    case "running":
+                      console.log("Upload is running");
+                      break;
+                  }
+                },
+                (error) => {
+                  console.log(error);
+                  reject(error);
+                },
+                async () => {
+                  const downloadURL = await getDownloadURL(
+                    uploadTask.snapshot.ref
+                  );
+                  imageUrls.push({ ...item, image: downloadURL });
+                  resolve(downloadURL);
+                  setProductData((prev) => ({
+                    ...prev,
+                    images: imageUrls,
+                  }));
+                }
+              );
+            });
+          }
+        }
+      } catch (error) {
+        console.log(error);
+        toast.error("Failed to upload the product image");
+      }
+    };
+
+    await handleImageUpload();
+
+    try {
+      await createProduct(productData);
+      toast.success("Product created!");
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to create the product");
+    }
+  };
+
+  const handleRemoveImage = (img: string) => {
+    const updatedImages = productData.images.filter(
+      (item) => item.color !== img
+    );
+
+    setProductData((prev) => ({
+      ...prev,
+      images: updatedImages,
     }));
   };
 
-  console.log(productData);
   return (
-    <div className="flex justify-center mt-16 p-2">
-      <form className="w-full p-4 border rounded-lg shadow-xl flex flex-col gap-8">
+    <div className="flex justify-center mt-16 p-2 max-w-[800px] mx-auto">
+      <form
+        className="w-full p-4 border rounded-lg shadow-xl flex flex-col gap-8"
+        onSubmit={handleSubmitForm}
+      >
         <div className="flex flex-col gap-3">
           <label htmlFor="name">Product Name</label>
           <input
@@ -76,6 +196,7 @@ const AddProducts = () => {
             className="p-3 outline-none border border-black rounded-lg w-full bg-white"
             onChange={handleInputChange}
             value={productData?.name}
+            required
           />
         </div>
 
@@ -84,9 +205,11 @@ const AddProducts = () => {
           <input
             id="price"
             name="price"
+            type="number"
             onChange={handleInputChange}
             value={productData?.price}
             className="p-3 outline-none border border-black rounded-lg w-full bg-white"
+            required
           />
         </div>
 
@@ -98,6 +221,7 @@ const AddProducts = () => {
             onChange={handleInputChange}
             value={productData?.brand}
             className="p-3 outline-none border border-black rounded-lg w-full bg-white"
+            required
           />
         </div>
 
@@ -109,6 +233,7 @@ const AddProducts = () => {
             onChange={handleInputChange}
             value={productData?.desc}
             className="p-3 outline-none border border-black rounded-lg w-full h-[200px] bg-white"
+            required
           />
         </div>
 
@@ -155,12 +280,42 @@ const AddProducts = () => {
                   className="flex flex-col gap-2 border-b pb-4"
                 >
                   <h2 className="font-semibold">{color.name}</h2>
-                  <input type="file" className="text-sm" />
+                  <div>
+                    <label htmlFor={color.name}>
+                      {productData.images.find(
+                        (img) => img.color === color.name
+                      ) ? (
+                        <div className="flex items-center gap-6">
+                          <p>Image selected</p>
+                          <button
+                            className="border border-gray-500 text-sm p-1 rounded-lg"
+                            onClick={() => handleRemoveImage(color.name)}
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      ) : (
+                        <input
+                          type="file"
+                          id={color.name}
+                          className="text-sm"
+                          onChange={(e) =>
+                            handleImageChange({
+                              color: color.name,
+                              colorCode: color.code,
+                              image: e.target.files && e.target.files[0],
+                            })
+                          }
+                        />
+                      )}
+                    </label>
+                  </div>
                 </div>
               );
             })}
           </div>
         </div>
+        <button className="bg-orange-500 px-3 py-2 rounded-lg">Submit</button>
       </form>
     </div>
   );

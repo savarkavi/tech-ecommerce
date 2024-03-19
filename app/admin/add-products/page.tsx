@@ -39,6 +39,8 @@ const AddProducts = () => {
     images: [],
   });
 
+  const [imagesUploaded, setImagesUploaded] = useState(false);
+
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -99,6 +101,77 @@ const AddProducts = () => {
     }
   };
 
+  const handleImageUpload = async () => {
+    toast("Adding product, please wait...");
+
+    let imageUrls: ImageType[] = [];
+
+    try {
+      for (const item of productData.images) {
+        if (item.image !== null && typeof item.image !== "string") {
+          const storage = getStorage(firebaseApp);
+          const storageRef = ref(storage, `products/${item.image.name}`);
+
+          const uploadTask = uploadBytesResumable(storageRef, item.image);
+
+          await new Promise((resolve, reject) => {
+            uploadTask.on(
+              "state_changed",
+              (snapshot) => {
+                const progress =
+                  (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                console.log("Upload is " + progress + "% done");
+                switch (snapshot.state) {
+                  case "paused":
+                    console.log("Upload is paused");
+                    break;
+                  case "running":
+                    console.log("Upload is running");
+                    break;
+                }
+              },
+              (error) => {
+                console.log(error);
+                reject(error);
+              },
+              async () => {
+                try {
+                  const downloadURL = await getDownloadURL(
+                    uploadTask.snapshot.ref
+                  );
+                  imageUrls.push({ ...item, image: downloadURL });
+
+                  resolve(downloadURL);
+                } catch (error) {
+                  console.log("Failed to get download URL:", error);
+                  reject(error); // Reject promise if getting download URL fails
+                }
+              }
+            );
+          });
+        }
+      }
+
+      setProductData((prev) => ({
+        ...prev,
+        images: imageUrls,
+      }));
+
+      await createProduct({
+        ...productData,
+        images: imageUrls.map((img) => ({
+          ...img,
+          image: img.image as string,
+        })),
+      });
+
+      toast.success("Product created!");
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to upload the product image");
+    }
+  };
+
   const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -106,68 +179,11 @@ const AddProducts = () => {
       return toast.error("Please add atleast one product image");
     }
 
-    const handleImageUpload = async () => {
-      toast("Adding product, please wait...");
-
-      let imageUrls: ImageType[] = [];
-
-      try {
-        for (const item of productData.images) {
-          if (item.image !== null && typeof item.image !== "string") {
-            const storage = getStorage(firebaseApp);
-            const storageRef = ref(storage, `products/${item.image.name}`);
-
-            const uploadTask = uploadBytesResumable(storageRef, item.image);
-
-            await new Promise((resolve, reject) => {
-              uploadTask.on(
-                "state_changed",
-                (snapshot) => {
-                  const progress =
-                    (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                  console.log("Upload is " + progress + "% done");
-                  switch (snapshot.state) {
-                    case "paused":
-                      console.log("Upload is paused");
-                      break;
-                    case "running":
-                      console.log("Upload is running");
-                      break;
-                  }
-                },
-                (error) => {
-                  console.log(error);
-                  reject(error);
-                },
-                async () => {
-                  const downloadURL = await getDownloadURL(
-                    uploadTask.snapshot.ref
-                  );
-                  imageUrls.push({ ...item, image: downloadURL });
-                  resolve(downloadURL);
-                  setProductData((prev) => ({
-                    ...prev,
-                    images: imageUrls,
-                  }));
-                }
-              );
-            });
-          }
-        }
-      } catch (error) {
-        console.log(error);
-        toast.error("Failed to upload the product image");
-      }
-    };
-
-    await handleImageUpload();
-
     try {
-      await createProduct(productData);
-      toast.success("Product created!");
+      await handleImageUpload();
     } catch (error) {
       console.log(error);
-      toast.error("Failed to create the product");
+      toast.error("Failed to upload the product image");
     }
   };
 

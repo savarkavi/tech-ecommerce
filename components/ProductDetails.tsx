@@ -37,9 +37,9 @@ const ProductDetails = ({
   const [rating, setRating] = useState(0);
   const [isAddedToCart, setIsAddedToCart] = useState(false);
   const [cartProduct, setCartProduct] = useState<CartProductType>({
-    id: currentProduct.id,
+    id: currentProduct._id,
     name: currentProduct.name,
-    description: currentProduct.description,
+    description: currentProduct.desc,
     category: currentProduct.category,
     brand: currentProduct.brand,
     quantity: 1,
@@ -51,7 +51,7 @@ const ProductDetails = ({
 
   useEffect(() => {
     const isAdded = cartProducts?.find(
-      (product) => product.id === currentProduct?.id
+      (product) => product.id === currentProduct?._id
     );
 
     if (isAdded) {
@@ -155,7 +155,7 @@ const ProductDetails = ({
             <p>{`${currentProduct.reviews.length} reviews`}</p>
           </div>
           <div className="w-[150px] sm:w-[300px] h-[2px] bg-gray-300 my-4"></div>
-          <p className="text-sm max-w-[500px]">{currentProduct.description}</p>
+          <p className="text-sm max-w-[500px]">{currentProduct.desc}</p>
           <div className="w-[150px] sm:w-[300px] h-[2px] bg-gray-300 my-4"></div>
           <div className="flex flex-col gap-2">
             <p>
@@ -182,7 +182,7 @@ const ProductDetails = ({
                 return (
                   <div
                     key={image.color}
-                    className={`p-1 rounded-full cursor-pointer ${
+                    className={`p-1 rounded-full cursor-pointer border border-black ${
                       cartProduct.selectedImage?.color === image.color &&
                       "border border-green-500"
                     }`}

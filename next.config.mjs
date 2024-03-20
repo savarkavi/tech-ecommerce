@@ -5,6 +5,7 @@ const nextConfig = {
       "m.media-amazon.com",
       "lh3.googleusercontent.com",
       "img.clerk.com",
+      "firebasestorage.googleapis.com",
     ],
   },
   serverRuntimeConfig: {

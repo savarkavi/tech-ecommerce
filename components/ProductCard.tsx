@@ -6,14 +6,15 @@ import { useState } from "react";
 import { Rating } from "react-simple-star-rating";
 
 export type ProductType = {
-  id: string;
+  _id: string;
   name: string;
-  description: string;
+  desc: string;
   price: number;
   brand: string;
   category: string;
   inStock: boolean;
   images: Array<{
+    _id: string;
     color: string;
     colorCode: string;
     image: string;
@@ -58,7 +59,7 @@ const ProductCard = ({ product }: { product: ProductType }) => {
 
   return (
     <Link
-      href={`product/${product.id}`}
+      href={`product/${product._id}`}
       className="border px-6 py-3 rounded-lg shadow-md max-w-[350px] mx-auto"
     >
       <div className="relative w-[250px] h-[300px]">

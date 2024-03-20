@@ -1,13 +1,27 @@
 "use client";
 
-import { products } from "@/constants";
 import { useParams } from "next/navigation";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ProductDetails from "./ProductDetails";
+import { getProduct } from "@/lib/actions/product";
+import { ProductType } from "./ProductCard";
 
 const Product = ({ user }: { user: string }) => {
+  const [currentProduct, setCurrentProduct] = useState<ProductType | null>(
+    null
+  );
   const { id } = useParams();
-  const currentProduct = products.find((product) => product.id === id);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      if (!Array.isArray(id)) {
+        const res = await getProduct(id);
+        setCurrentProduct(res);
+      }
+    };
+
+    fetchProduct();
+  }, [id]);
 
   if (!currentProduct) {
     return null;

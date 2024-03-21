@@ -8,12 +8,19 @@ import Link from "next/link";
 import { SignedIn, SignedOut, UserButton, useClerk } from "@clerk/nextjs";
 import Profile from "./Profile";
 import { getUser } from "@/lib/actions/user";
+import { useRouter } from "next/navigation";
+import { getProductsByQuery } from "@/lib/actions/product";
+import { useProductsContext } from "@/hooks/useProducts";
 
 const NavbarItems = ({ clerkUser }: { clerkUser: string }) => {
   const [isSearchHidden, setIsSearchHidden] = useState(true);
   const [currentUser, setCurrentUser] = useState(null);
+  const [search, setSearch] = useState("");
 
   const { cartQuantity } = useCart();
+  const { setProducts } = useProductsContext();
+
+  const router = useRouter();
 
   useEffect(() => {
     const handleResize = () => {
@@ -44,6 +51,17 @@ const NavbarItems = ({ clerkUser }: { clerkUser: string }) => {
     setIsSearchHidden((prev) => !prev);
   };
 
+  const handleSearchSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const url = `/?search=${search}`;
+    router.push(url);
+
+    const data = await getProductsByQuery(search);
+    setProducts(data);
+    setSearch("");
+  };
+
   return (
     <div className="p-4 bg-gray-200 shadow-lg sticky top-0 z-[99]">
       <div className="max-w-[1600px] mx-auto flex items-center justify-between">
@@ -51,11 +69,16 @@ const NavbarItems = ({ clerkUser }: { clerkUser: string }) => {
           <Image src="/logo.png" alt="logo" width={50} height={50} />
           <h1 className="font-semibold text-xl hidden lg:block">Tech Cart</h1>
         </Link>
-        <form className="w-full max-w-[500px] mx-auto hidden md:flex">
+        <form
+          className="w-full max-w-[500px] mx-auto hidden md:flex"
+          onSubmit={handleSearchSubmit}
+        >
           <input
             placeholder="search items..."
             type="text"
             className="p-3 rounded-l-lg outline-none w-full"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
           />
           <button className="p-3 bg-orange-500 rounded-r-lg">Search</button>
         </form>
@@ -68,6 +91,8 @@ const NavbarItems = ({ clerkUser }: { clerkUser: string }) => {
             placeholder="search items..."
             type="text"
             className="p-3 rounded-l-lg outline-none w-full"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
           />
           <button className="p-3 bg-orange-500 rounded-r-lg">Search</button>
         </form>

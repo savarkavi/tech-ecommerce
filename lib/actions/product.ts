@@ -39,7 +39,9 @@ export const getProducts = async () => {
 
   try {
     await connectDB();
-    const res = await Product.find({}, fieldsToDeselect);
+    const res = await Product.find({}, fieldsToDeselect).populate({
+      path: "reviews",
+    });
     return JSON.parse(JSON.stringify(res));
   } catch (error) {
     console.log(error);
@@ -55,7 +57,34 @@ export const getProduct = async (id: string) => {
 
   try {
     await connectDB();
-    const res = await Product.findById(new ObjectId(id), fieldsToDeselect);
+    const res = await Product.findById(
+      new ObjectId(id),
+      fieldsToDeselect
+    ).populate({ path: "reviews", populate: { path: "userId" } });
+    return JSON.parse(JSON.stringify(res));
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getProductsByQuery = async (query: string) => {
+  try {
+    await connectDB();
+    const res = await Product.find({
+      name: { $regex: query, $options: "i" },
+    }).populate({ path: "reviews" });
+    return JSON.parse(JSON.stringify(res));
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getProductsByCategory = async (cat: string) => {
+  try {
+    await connectDB();
+    const res = await Product.find({ category: cat }).populate({
+      path: "reviews",
+    });
     return JSON.parse(JSON.stringify(res));
   } catch (error) {
     console.log(error);

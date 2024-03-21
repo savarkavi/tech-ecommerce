@@ -1,56 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useProductsContext } from "@/hooks/useProducts";
 import ProductCard from "./ProductCard";
-import { getProducts } from "@/lib/actions/product";
-
-type productsData = {
-  _id: string;
-  name: string;
-  desc: string;
-  brand: string;
-  category: string;
-  price: number;
-  inStock: boolean;
-  images: Array<{
-    _id: string;
-    color: string;
-    colorCode: string;
-    image: string;
-  }>;
-  reviews: Array<{
-    id: string;
-    userId: string;
-    productId: string;
-    rating: number;
-    comment: string;
-    createdDate: string;
-    user: {
-      id: string;
-      name: string;
-      email: string;
-      image: string;
-      createdAt: string;
-      updatedAt: string;
-      role: string;
-    };
-  }>;
-};
 
 const HomeProducts = () => {
-  const [products, setProducts] = useState<productsData[] | null>(null);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      const res = await getProducts();
-      setProducts(res);
-    };
-
-    fetchProducts();
-  }, []);
+  const { products } = useProductsContext();
 
   if (products === null) {
-    return <div>Loading...</div>;
+    return (
+      <div className="w-full flex justify-center mt-20 text-lg">Loading...</div>
+    );
+  }
+
+  if (products.length === 0) {
+    return (
+      <div className="w-full flex justify-center mt-20 text-lg">
+        No products found
+      </div>
+    );
   }
 
   return (

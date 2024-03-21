@@ -9,6 +9,7 @@ import { ProductType } from "./ProductCard";
 import QuantityCounter from "./QuantityCounter";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import ReviewForm from "./ReviewForm";
 
 export type SelectedImageType = {
   color: string;
@@ -34,7 +35,6 @@ const ProductDetails = ({
   currentProduct: ProductType;
   user: string;
 }) => {
-  const [rating, setRating] = useState(0);
   const [isAddedToCart, setIsAddedToCart] = useState(false);
   const [cartProduct, setCartProduct] = useState<CartProductType>({
     id: currentProduct._id,
@@ -47,7 +47,7 @@ const ProductDetails = ({
     selectedImage: currentProduct.images[0],
   });
 
-  const { cartQuantity, cartProducts, handleAddToCart } = useCart();
+  const { cartProducts, handleAddToCart } = useCart();
 
   useEffect(() => {
     const isAdded = cartProducts?.find(
@@ -73,10 +73,6 @@ const ProductDetails = ({
     }
   };
 
-  const handleRating = (rate: number) => {
-    setRating(rate);
-  };
-
   const handleColorChange = (image: {
     color: string;
     colorCode: string;
@@ -99,7 +95,7 @@ const ProductDetails = ({
   };
 
   return (
-    <div className="px-4 py-8 2xl:px-0 max-w-[1600px] mx-auto">
+    <div className="px-4 py-8 max-w-[1600px] mx-auto">
       <div className="lg:flex lg:gap-8 lg:justify-between lg:items-start">
         <div className="flex flex-col-reverse gap-8 lg:w-[500px] lg:flex-shrink-0 xl:flex-row xl:h-[500px] xl:flex-grow">
           <div className="w-full border h-[100px] xl:h-full xl:w-[200px] rounded-lg flex xl:flex-col justify-between p-2">
@@ -144,7 +140,7 @@ const ProductDetails = ({
           <p className="font-semibold">{`$${currentProduct.price}`}</p>
           <div className="flex items-center gap-2">
             <Rating
-              onClick={handleRating}
+              readonly
               initialValue={initialValue()}
               allowFraction={true}
               style={{
@@ -215,7 +211,7 @@ const ProductDetails = ({
           {isAddedToCart ? (
             <Link
               href="/cart"
-              className="px-3 py-2 bg-orange-500 rounded-xl w-[200px]"
+              className="px-3 py-2 bg-orange-500 rounded-xl w-[200px] text-center"
             >
               View Cart
             </Link>
@@ -234,10 +230,13 @@ const ProductDetails = ({
         </div>
       </div>
       <div className="mt-20 2xl:mt-24">
-        <h2 className="text-2xl my-8">Reviews</h2>
+        <h2 className="text-xl my-8">Add a Review</h2>
+        <ReviewForm user={user} currentProduct={currentProduct} />
+        <h2 className="text-xl my-12">Product reviews</h2>
+        {currentProduct.reviews.length === 0 && <div>No reviews available</div>}
         <div className="flex flex-col gap-20">
           {currentProduct.reviews.map((review) => {
-            return <ReviewCard key={review.id} review={review} />;
+            return <ReviewCard key={review._id} review={review} />;
           })}
         </div>
       </div>

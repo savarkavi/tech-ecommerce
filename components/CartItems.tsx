@@ -24,13 +24,13 @@ const CartItems = () => {
     <div className="lg:hidden">
       {cartProducts.map((product) => {
         return (
-          <div key={product.id} className="p-4 flex gap-6 border-y">
-            <div className="relative w-[150px] h-[200px] flex-shrink-0">
+          <div key={product.id} className="p-4 flex gap-12 border-y">
+            <div className="relative w-[150px] h-[200px]">
               <Image
                 src={product.selectedImage.image}
                 alt="product image"
                 fill
-                className="object-contain"
+                className="object-cover"
               />
             </div>
             <div className="flex flex-col justify-between gap-4">

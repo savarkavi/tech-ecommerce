@@ -14,8 +14,7 @@ type User = {
 };
 
 type Review = {
-  id: string;
-  userId: string;
+  _id: string;
   productId: string;
   rating: number;
   comment: string;
@@ -23,23 +22,24 @@ type Review = {
   user: User;
 };
 
-const ReviewCard = ({ review }: { review: Review }) => {
+const ReviewCard = ({ review }: { review: any }) => {
   return (
     <div>
       <div className="flex items-center gap-4">
         <Image
-          src={review.user.image}
+          src={review.userId.profilePhoto}
           alt="user image"
           width={24}
           height={24}
           className="rounded-full"
         />
-        <h2 className="font-semibold">{review.user.name}</h2>
-        <p className="text-gray-500">{`${moment(
-          review.createdDate
+        <h2 className="font-semibold">{review.userId.username}</h2>
+        <p className="text-gray-500 text-sm sm:text-base">{`${moment(
+          review.createdAt
         ).fromNow()}`}</p>
       </div>
       <Rating
+        readonly
         initialValue={review.rating}
         allowFraction={true}
         style={{

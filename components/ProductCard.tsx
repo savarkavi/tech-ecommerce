@@ -20,14 +20,15 @@ export type ProductType = {
     image: string;
   }>;
   reviews: Array<{
-    id: string;
+    _id: string;
     userId: string;
     productId: string;
     rating: number;
     comment: string;
-    createdDate: string;
+    createdAt: string;
+    updatedAt: string;
     user: {
-      id: string;
+      _id: string;
       name: string;
       email: string;
       image: string;
@@ -39,12 +40,6 @@ export type ProductType = {
 };
 
 const ProductCard = ({ product }: { product: ProductType }) => {
-  const [rating, setRating] = useState(0);
-
-  const handleRating = (rate: number) => {
-    setRating(rate);
-  };
-
   const initialValue = () => {
     const ratingsArray = product.reviews.map((review) => review.rating);
 
@@ -78,7 +73,7 @@ const ProductCard = ({ product }: { product: ProductType }) => {
         </h2>
 
         <Rating
-          onClick={handleRating}
+          readonly
           initialValue={initialValue()}
           allowFraction={true}
           style={{

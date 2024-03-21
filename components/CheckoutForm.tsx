@@ -8,7 +8,6 @@ import {
 import { StripePaymentElementOptions } from "@stripe/stripe-js";
 import { useCart } from "@/hooks/useCart";
 import toast from "react-hot-toast";
-import { useRouter } from "next/router";
 
 export default function CheckoutForm({
   clientSecret,

@@ -14,3 +14,17 @@ export const updateOrder = async (intentId: string, address: any) => {
     console.log(error);
   }
 };
+
+export const getOrders = async () => {
+  const fieldsToDeselect = {
+    address: 0,
+  };
+
+  try {
+    await connectDB();
+    const res = await Order.find({}, fieldsToDeselect);
+    return JSON.parse(JSON.stringify(res));
+  } catch (error) {
+    console.log(error);
+  }
+};

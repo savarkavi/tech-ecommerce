@@ -5,7 +5,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CartProvider from "@/providers/CartProvider";
 import { Toaster } from "react-hot-toast";
-import { ClerkProvider, currentUser } from "@clerk/nextjs";
+import { ClerkProvider } from "@clerk/nextjs";
+import { ProductsProvider } from "@/hooks/useProducts";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,11 +25,13 @@ export default async function RootLayout({
       <html lang="en">
         <body className={inter.className}>
           <CartProvider>
-            <div className="flex flex-col min-h-screen">
-              <Navbar />
-              <main className="flex-grow">{children}</main>
-              <Footer />
-            </div>
+            <ProductsProvider>
+              <div className="flex flex-col min-h-screen">
+                <Navbar />
+                <main className="flex-grow">{children}</main>
+                <Footer />
+              </div>
+            </ProductsProvider>
           </CartProvider>
           <Toaster />
         </body>

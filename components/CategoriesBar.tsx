@@ -1,14 +1,28 @@
 "use client";
 
 import { categories } from "@/constants";
+import { useProductsContext } from "@/hooks/useProducts";
+import { getProducts, getProductsByCategory } from "@/lib/actions/product";
 import { useState } from "react";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
 const CategoriesBar = () => {
   const [isCategoriesExpanded, setIsCategoriesExpanded] = useState(false);
+  const { setProducts } = useProductsContext();
 
   const handleSeeMoreClick = () => {
     setIsCategoriesExpanded((prev) => !prev);
+  };
+
+  const handleCategorySearch = async (cat: string) => {
+    if (cat === "All") {
+      const data = await getProducts();
+      setProducts(data);
+      return;
+    }
+
+    const data = await getProductsByCategory(cat);
+    setProducts(data);
   };
 
   return (
@@ -22,7 +36,8 @@ const CategoriesBar = () => {
           return (
             <div
               key={cat.name}
-              className="flex items-center gap-2 text-sm sm:text-base"
+              className="flex items-center gap-2 text-sm sm:text-base cursor-pointer"
+              onClick={() => handleCategorySearch(cat.name)}
             >
               {cat.icon}
               <span>{cat.name}</span>

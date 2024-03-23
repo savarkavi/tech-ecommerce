@@ -1,7 +1,6 @@
 "use server";
 
-import Product from "../models/product";
-import Review from "../models/review";
+import { Product, Review } from "../models/models";
 import { connectDB } from "../mongoose";
 
 type ReviewParams = {

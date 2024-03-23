@@ -13,18 +13,8 @@ const orderSchema = new mongoose.Schema(
     paymentIntentId: String,
     products: [
       {
-        id: String,
-        name: String,
-        description: String,
-        category: String,
-        brand: String,
-        quantity: Number,
-        price: Number,
-        selectedImage: {
-          color: String,
-          colorCode: String,
-          image: String,
-        },
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
       },
     ],
     address: mongoose.Schema.Types.Mixed,

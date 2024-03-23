@@ -6,7 +6,7 @@ import ProductCard from "./ProductCard";
 const HomeProducts = () => {
   const { products } = useProductsContext();
 
-  if (products === null) {
+  if (!products) {
     return (
       <div className="w-full flex justify-center mt-20 text-lg">Loading...</div>
     );

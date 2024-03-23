@@ -8,6 +8,7 @@ import {
 import { StripePaymentElementOptions } from "@stripe/stripe-js";
 import { useCart } from "@/hooks/useCart";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function CheckoutForm({
   clientSecret,
@@ -17,6 +18,7 @@ export default function CheckoutForm({
   const stripe = useStripe();
   const elements = useElements();
   const { handleClearCart } = useCart();
+  const router = useRouter();
 
   const [message, setMessage] = React.useState<string | null>(null);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -66,6 +68,7 @@ export default function CheckoutForm({
         if (!res.error) {
           toast.success("Payment successful");
           handleClearCart();
+          router.push("/");
         } else {
           if (
             res.error.type === "card_error" ||
@@ -111,7 +114,6 @@ export default function CheckoutForm({
         </span>
       </button>
       {/* Show any error or success messages */}
-      {message && <div id="payment-message">{message}</div>}
     </form>
   );
 }

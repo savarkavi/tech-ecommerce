@@ -28,3 +28,17 @@ export const getOrders = async () => {
     console.log(error);
   }
 };
+
+export const getOrder = async (id: string) => {
+  const fieldsToDeselect = {
+    address: 0,
+  };
+
+  try {
+    await connectDB();
+    const res = await Order.findOne({ _id: id }, fieldsToDeselect);
+    return JSON.parse(JSON.stringify(res));
+  } catch (error) {
+    console.log(error);
+  }
+};

@@ -23,45 +23,41 @@ export async function POST(req: NextRequest) {
     products: items,
   };
 
+  let paymentIntent;
+
   if (payment_intent_id) {
-    const currentIntent = await stripe.paymentIntents.retrieve(
-      payment_intent_id
+    console.log("PI exists", payment_intent_id);
+
+    paymentIntent = await stripe.paymentIntents.retrieve(payment_intent_id);
+    const updatedIntent = await stripe.paymentIntents.update(
+      payment_intent_id,
+      { amount: total * 100 }
     );
-
-    if (currentIntent) {
-      const updatedIntent = await stripe.paymentIntents.update(
-        payment_intent_id,
-        { amount: total * 100 }
-      );
-
-      const existingOrder = await Order.findOne({
-        paymentIntentId: payment_intent_id,
-      });
-      if (!existingOrder) {
-        return NextResponse.json(
-          { error: "Invalid payment Intent" },
-          { status: 400 }
-        );
-      }
-
-      const updatedOrder = await Order.findOneAndUpdate(
-        { paymentIntentId: payment_intent_id },
-        { amount: total, products: items }
-      );
-
-      return NextResponse.json({ paymentIntent: updatedIntent });
-    }
   } else {
-    const paymentIntent = await stripe.paymentIntents.create({
+    console.log("PI doesnt exists");
+
+    paymentIntent = await stripe.paymentIntents.create({
       amount: total * 100,
       currency: "inr",
       automatic_payment_methods: { enabled: true },
       description: "Test transaction for ecommerce project",
     });
-
-    orderData.paymentIntentId = paymentIntent.id;
-    await Order.create(orderData);
-
-    return NextResponse.json({ paymentIntent });
   }
+
+  orderData.paymentIntentId = paymentIntent.id;
+
+  const existingOrder = await Order.findOne({
+    paymentIntentId: paymentIntent.id,
+  });
+
+  if (existingOrder) {
+    const updatedOrder = await Order.findOneAndUpdate(
+      { paymentIntentId: paymentIntent.id },
+      { amount: total, products: items }
+    );
+  } else {
+    await Order.create(orderData);
+  }
+
+  return NextResponse.json({ paymentIntent });
 }

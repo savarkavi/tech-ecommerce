@@ -1,6 +1,5 @@
 "use server";
-
-import Product from "../models/product";
+import { Product } from "../models/models";
 import { connectDB } from "../mongoose";
 import { ObjectId } from "mongodb";
 
@@ -42,6 +41,7 @@ export const getProducts = async () => {
     const res = await Product.find({}, fieldsToDeselect).populate({
       path: "reviews",
     });
+
     return JSON.parse(JSON.stringify(res));
   } catch (error) {
     console.log(error);
@@ -95,6 +95,7 @@ export const updateProductStockStatus = async (id: string) => {
   try {
     await connectDB();
     const res = await Product.findById(id);
+    if (!res) return null;
     await Product.findByIdAndUpdate(id, { inStock: !res.inStock });
   } catch (error) {
     console.log(error);

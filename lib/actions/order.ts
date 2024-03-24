@@ -36,7 +36,9 @@ export const getOrder = async (id: string) => {
 
   try {
     await connectDB();
-    const res = await Order.findOne({ _id: id }, fieldsToDeselect);
+    const res = await Order.findOne({ _id: id }, fieldsToDeselect).populate({
+      path: "products",
+    });
     return JSON.parse(JSON.stringify(res));
   } catch (error) {
     console.log(error);

@@ -26,7 +26,7 @@ const CartItemsTotal = () => {
       </p>
       <Link href="/checkout" className="w-full">
         <button className="py-2 px-3 bg-orange-500 rounded-lg text-sm w-full">
-          Checkout
+          Proceed to Checkout
         </button>{" "}
       </Link>
     </div>

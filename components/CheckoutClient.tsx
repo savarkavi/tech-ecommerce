@@ -29,11 +29,11 @@ const CheckoutClient = () => {
       const total = priceArr.reduce((acc, curr) => {
         return acc + curr;
       }, 0);
-      const products = [...cartProducts];
+      const productsIds = cartProducts.map((product) => product.id);
 
       try {
         const res = await axios.post("/api/create_payment_intent", {
-          items: products,
+          items: productsIds,
           total,
           payment_intent_id: paymentIntent,
         });

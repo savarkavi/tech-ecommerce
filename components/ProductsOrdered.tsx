@@ -7,11 +7,11 @@ const ProductsOrdered = ({ order }: { order: OrdersData }) => {
     <div className="mt-16">
       <h2 className="text-2xl">Products Ordered</h2>
 
-      <div className="lg:hidden">
+      <div className="mt-8">
         {order.products.map((product) => {
           return (
             <div key={product._id} className="p-4 flex gap-12 border-y">
-              <div className="relative w-[150px] h-[200px]">
+              <div className="relative w-[120px] h-[150px]">
                 <Image
                   src={product.images[0].image}
                   alt="product image"
@@ -21,10 +21,9 @@ const ProductsOrdered = ({ order }: { order: OrdersData }) => {
               </div>
               <div className="flex flex-col justify-between gap-4">
                 <div className="flex flex-col gap-4">
-                  <h1 className="text-gray-600 text-sm sm:text-base">
-                    {product.name}
-                  </h1>
+                  <h1 className="font-semibold text-lg">{product.name}</h1>
                   <p>{`₹${product.price}`}</p>
+                  <p className="text-sm text-gray-600">{product.desc}</p>
                 </div>
               </div>
             </div>

@@ -32,7 +32,7 @@ const Profile = ({ currentUser }: { currentUser: any }) => {
       <DropdownMenuContent className="z-[999]">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Settings</DropdownMenuItem>
+        {/* <DropdownMenuItem>Settings</DropdownMenuItem> */}
         <DropdownMenuItem>
           <Link href="/orders">Your Orders</Link>
         </DropdownMenuItem>

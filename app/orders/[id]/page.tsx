@@ -30,7 +30,7 @@ const OrderDetails = () => {
   }
 
   return (
-    <div className="px-8">
+    <div className="px-8 max-w-[1280px] mx-auto">
       <h2 className="text-2xl mt-20">Order Details</h2>
       <div className="mt-8 flex flex-col gap-4 text-sm">
         <p className=" flex gap-2">

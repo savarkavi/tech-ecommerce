@@ -1,5 +1,6 @@
 import Order from "@/lib/models/order";
 import { currentUser } from "@clerk/nextjs";
+import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
@@ -13,6 +14,8 @@ export async function POST(req: NextRequest) {
   }
 
   const { items, total, payment_intent_id } = await req.json();
+  const productIds = items.map((id: string) => new mongoose.mongo.ObjectId(id));
+
   const orderData = {
     userId: user.publicMetadata.userId,
     amount: total,
@@ -20,22 +23,18 @@ export async function POST(req: NextRequest) {
     status: "pending",
     deliveryStatus: "pending",
     paymentIntentId: payment_intent_id,
-    products: items,
+    products: productIds,
   };
 
   let paymentIntent;
 
   if (payment_intent_id) {
-    console.log("PI exists", payment_intent_id);
-
     paymentIntent = await stripe.paymentIntents.retrieve(payment_intent_id);
     const updatedIntent = await stripe.paymentIntents.update(
       payment_intent_id,
       { amount: total * 100 }
     );
   } else {
-    console.log("PI doesnt exists");
-
     paymentIntent = await stripe.paymentIntents.create({
       amount: total * 100,
       currency: "inr",
@@ -53,7 +52,7 @@ export async function POST(req: NextRequest) {
   if (existingOrder) {
     const updatedOrder = await Order.findOneAndUpdate(
       { paymentIntentId: paymentIntent.id },
-      { amount: total, products: items }
+      { amount: total, products: productIds }
     );
   } else {
     await Order.create(orderData);

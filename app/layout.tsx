@@ -28,8 +28,8 @@ export default async function RootLayout({
             <ProductsProvider>
               <div className="flex flex-col min-h-screen">
                 <Navbar />
-                <main className="flex-grow">{children}</main>
-                <Footer />
+                <main className="flex-grow mb-16">{children}</main>
+                {/* <Footer /> */}
               </div>
             </ProductsProvider>
           </CartProvider>

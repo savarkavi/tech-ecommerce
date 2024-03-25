@@ -109,16 +109,23 @@ const ProductsTable = () => {
                   </span>
                 )}
               </TableCell>
-              <TableCell className="text-center flex justify-center gap-6 text-xl">
-                <MdOutlineChangeCircle
-                  className="cursor-pointer"
-                  onClick={() => handleInStockToggle(product._id)}
-                />
-                <FaTrash
-                  className="cursor-pointer"
-                  onClick={() => handleDeleteProduct(product._id)}
-                />
-                <Link href={`/product/${product._id}`}>
+              <TableCell className="text-center flex justify-center gap-3 text-xl">
+                <div className="p-2 border-2 rounded-lg">
+                  <MdOutlineChangeCircle
+                    className="cursor-pointer"
+                    onClick={() => handleInStockToggle(product._id)}
+                  />
+                </div>
+                <div className="p-2 border-2 rounded-lg">
+                  <FaTrash
+                    className="cursor-pointer"
+                    onClick={() => handleDeleteProduct(product._id)}
+                  />
+                </div>
+                <Link
+                  href={`/product/${product._id}`}
+                  className="p-2 border-2 rounded-lg"
+                >
                   <FaEye className="cursor-pointer" />
                 </Link>
               </TableCell>

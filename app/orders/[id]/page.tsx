@@ -3,9 +3,9 @@
 import { getOrder } from "@/lib/actions/order";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { OrdersData } from "../page";
 import moment from "moment";
 import ProductsOrdered from "@/components/ProductsOrdered";
+import { OrdersData } from "@/components/AdminOrders";
 
 const OrderDetails = () => {
   const [order, setOrder] = useState<OrdersData | null>(null);
@@ -59,6 +59,8 @@ const OrderDetails = () => {
             className={`${
               order.deliveryStatus === "pending"
                 ? "bg-gray-300"
+                : order.deliveryStatus === "dispatched"
+                ? "bg-fuchsia-400 text-white"
                 : "bg-green-500 text-white"
             } py-1 px-2 rounded-md`}
           >

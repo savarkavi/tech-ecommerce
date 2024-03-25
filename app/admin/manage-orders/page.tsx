@@ -1,7 +1,8 @@
+import AdminOrders from "@/components/AdminOrders";
 import React from "react";
 
 const ManageOrders = () => {
-  return <div>ManageOrders</div>;
+  return <AdminOrders />;
 };
 
 export default ManageOrders;

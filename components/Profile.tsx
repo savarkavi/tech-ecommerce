@@ -38,7 +38,7 @@ const Profile = ({ currentUser }: { currentUser: any }) => {
         </DropdownMenuItem>
         {currentUser?.role === "ADMIN" && (
           <DropdownMenuItem>
-            <Link href="/admin">Admin</Link>
+            <Link href="/admin/add-products">Admin</Link>
           </DropdownMenuItem>
         )}
         <DropdownMenuItem>

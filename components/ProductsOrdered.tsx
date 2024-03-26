@@ -1,6 +1,6 @@
-import { OrdersData } from "@/app/orders/page";
 import Image from "next/image";
 import React from "react";
+import { OrdersData } from "./AdminOrders";
 
 const ProductsOrdered = ({ order }: { order: OrdersData }) => {
   return (

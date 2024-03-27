@@ -1,6 +1,6 @@
 "use server";
 
-import User from "../models/user";
+import { User } from "../models/models";
 import { connectDB } from "../mongoose";
 
 type userParams = {

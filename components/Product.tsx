@@ -27,7 +27,13 @@ const Product = ({ user }: { user: string }) => {
     return null;
   }
 
-  return <ProductDetails currentProduct={currentProduct} user={user} />;
+  return (
+    <ProductDetails
+      currentProduct={currentProduct}
+      user={user}
+      setCurrentProduct={setCurrentProduct}
+    />
+  );
 };
 
 export default Product;

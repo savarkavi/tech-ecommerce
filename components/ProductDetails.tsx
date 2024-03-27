@@ -31,9 +31,11 @@ export type CartProductType = {
 const ProductDetails = ({
   currentProduct,
   user,
+  setCurrentProduct,
 }: {
   currentProduct: ProductType;
   user: string;
+  setCurrentProduct: React.Dispatch<React.SetStateAction<ProductType | null>>;
 }) => {
   const [isAddedToCart, setIsAddedToCart] = useState(false);
   const [cartProduct, setCartProduct] = useState<CartProductType>({
@@ -231,7 +233,11 @@ const ProductDetails = ({
       </div>
       <div className="mt-20 2xl:mt-24">
         <h2 className="text-xl my-8">Add a Review</h2>
-        <ReviewForm user={user} currentProduct={currentProduct} />
+        <ReviewForm
+          user={user}
+          currentProduct={currentProduct}
+          setCurrentProduct={setCurrentProduct}
+        />
         <h2 className="text-xl my-12">Product reviews</h2>
         {currentProduct.reviews.length === 0 && <div>No reviews available</div>}
         <div className="flex flex-col gap-20">

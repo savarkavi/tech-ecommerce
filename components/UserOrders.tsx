@@ -86,6 +86,8 @@ const UserOrders = ({ user }: { user: any }) => {
                     className={`${
                       order.deliveryStatus === "pending"
                         ? "bg-gray-300"
+                        : order.deliveryStatus === "dispatched"
+                        ? "bg-fuchsia-400 text-white"
                         : "bg-green-500 text-white"
                     } py-1 px-2 rounded-md`}
                   >
@@ -139,6 +141,8 @@ const UserOrders = ({ user }: { user: any }) => {
                       className={`${
                         order.deliveryStatus === "pending"
                           ? "bg-gray-300"
+                          : order.deliveryStatus === "dispatched"
+                          ? "bg-fuchsia-400 text-white"
                           : "bg-green-500 text-white"
                       } py-1 px-2 rounded-md`}
                     >

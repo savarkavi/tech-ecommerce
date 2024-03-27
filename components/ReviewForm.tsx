@@ -10,9 +10,11 @@ import toast from "react-hot-toast";
 const ReviewForm = ({
   user,
   currentProduct,
+  setCurrentProduct,
 }: {
   user: string;
   currentProduct: ProductType;
+  setCurrentProduct: React.Dispatch<React.SetStateAction<ProductType | null>>;
 }) => {
   const [rating, setRating] = useState(0);
   const [commentText, setCommentText] = useState("");
@@ -22,24 +24,36 @@ const ReviewForm = ({
   const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    if (!clerkUser) {
+      return toast.error("Sign In to add a review");
+    }
+
     if (rating === 0) {
       toast.error("Please also rate the product.");
       return;
     }
 
-    const user = await getUser(clerkUser.id);
+    if (clerkUser) {
+      const user = await getUser(clerkUser.id);
 
-    await addReview({
-      userId: user._id,
-      productId: currentProduct._id,
-      rating,
-      comment: commentText,
-    });
+      const res = await addReview({
+        userId: user._id,
+        productId: currentProduct._id,
+        rating,
+        comment: commentText,
+      });
 
-    setCommentText("");
-    setRating(0);
+      setCommentText("");
+      setRating(0);
 
-    toast.success("Review submitted!");
+      const updatedReviewsProduct = {
+        ...currentProduct,
+        reviews: [...currentProduct.reviews, res],
+      };
+
+      setCurrentProduct(updatedReviewsProduct);
+      toast.success("Review submitted!");
+    }
   };
 
   const handleRating = (rate: number) => {

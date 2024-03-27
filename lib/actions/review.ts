@@ -14,8 +14,6 @@ export const addReview = async (reviewData: ReviewParams) => {
   try {
     await connectDB();
     const res = await Review.create(reviewData);
-    console.log(res._id);
-
     await Product.findByIdAndUpdate(res.productId, {
       $push: { reviews: res._id },
     });

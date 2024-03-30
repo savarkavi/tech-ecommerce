@@ -1,6 +1,6 @@
 "use server";
 
-import Order from "../models/order";
+import { Order } from "../models/models";
 import { connectDB } from "../mongoose";
 import { ObjectId } from "mongodb";
 
@@ -56,6 +56,7 @@ export const getOrder = async (id: string) => {
     const res = await Order.findOne({ _id: id }, fieldsToDeselect).populate({
       path: "products",
     });
+
     return JSON.parse(JSON.stringify(res));
   } catch (error) {
     console.log(error);

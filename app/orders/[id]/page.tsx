@@ -16,6 +16,8 @@ const OrderDetails = () => {
     const fetchOrder = async () => {
       if (!Array.isArray(id)) {
         const data = await getOrder(id);
+        console.log(data);
+
         setOrder(data);
       }
     };

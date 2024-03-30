@@ -1,4 +1,4 @@
-import Order from "@/lib/models/order";
+import { Order } from "../../../lib/models/models";
 import { currentUser } from "@clerk/nextjs";
 import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
